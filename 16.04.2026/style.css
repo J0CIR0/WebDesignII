@@ -52,3 +52,19 @@ button {
 button:hover {
     background-color: #06212e;
 }
+
+#resultadoBusqueda,
+#resultadoCotizacion {
+    margin-top: 12px;
+}
+
+.servicio-card {
+    border: 1px solid #3f6d85;
+    background-color: #0b3447;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.servicio-card h3 {
+    margin-top: 0;
+}
