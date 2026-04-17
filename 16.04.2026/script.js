@@ -1,64 +1,146 @@
-const nombreEmprendedor = "Josue Claros";
+let nombreEmprendedor = "Josue Claros";
 let nombreNegocio = "JociroPy";
-let rubro = "Desarrollo de software";
-let añoFundacion = 2019;
-let productos = ["Página web básica", "Bot para redes sociales", "Sistema de inventario", "hola", "hola mundo"];
-let precios = [15000, 8000, 25000, 1250, 20];
-let estaActivo = false;
-let calificacion = 4.7;
+let github = "J0CIR0";
+let añosExperiencia = 3;
+let programas = ["Pagina web", "Programa escritorio", "Migracion sistema", "Base datos", "Entrenamiento IA"];
+let certificaciones = ["Embajador Estudiantil Microsoft Learn", "IA y Machine Learning"];
+let preciosBase = {
+    "Pagina web": 2000,
+    "Programa escritorio": 5000,
+    "Migracion sistema": 8000,
+    "Base datos": 3000,
+    "Entrenamiento IA": 10000
+};
+let tiemposBase = {
+    "Pagina web": 5,
+    "Programa escritorio": 15,
+    "Migracion sistema": 20,
+    "Base datos": 8,
+    "Entrenamiento IA": 30
+};
 
-console.log("=== DATOS DEL EMPRENDEDOR Y NEGOCIO ===");
-console.log("nombreEmprendedor:", nombreEmprendedor, "-> Tipo:", typeof nombreEmprendedor);
-console.log("nombreNegocio:", nombreNegocio, "-> Tipo:", typeof nombreNegocio);
-console.log("rubro:", rubro, "-> Tipo:", typeof rubro);
-console.log("añoFundacion:", añoFundacion, "-> Tipo:", typeof añoFundacion);
-console.log("productos:", productos, "-> Tipo:", typeof productos);
-console.log("precios:", precios, "-> Tipo:", typeof precios);
-console.log("estaActivo:", estaActivo, "-> Tipo:", typeof estaActivo);
-console.log("calificacion:", calificacion, "-> Tipo:", typeof calificacion);
+let presentacion = `
+    <h2>Sobre mí</h2>
+    <p>Hola, soy ${nombreEmprendedor}, fundador de ${nombreNegocio}.</p>
+    <p>Soy desarrollador de software con ${añosExperiencia} años de experiencia.</p>
+    <p>Puedo crear: ${programas.join(", ")}.</p>
+    <p>Certificaciones: ${certificaciones.join(", ")}.</p>
+    <p>Mi GitHub: <a href="https://github.com/${github}" target="_blank">github.com/${github}</a></p>
+`;
 
-let totalProductos = productos.length;
-console.log("\nTotal de productos disponibles:", totalProductos);
+document.getElementById("presentacion").innerHTML = presentacion;
 
-console.log(0 === false);
-document.getElementById("contenido").innerHTML += "<p><strong>Comparación 0 === false:</strong> " + (0 === false) + "</p>";
-
-console.log("" === false);
-document.getElementById("contenido").innerHTML += "<p><strong>Comparación '' === false:</strong> " + ("" === false) + "</p>";
-
-console.log(null === undefined);
-document.getElementById("contenido").innerHTML += "<p><strong>Comparación null === undefined:</strong> " + (null === undefined) + "</p>";
-
-console.log(5 === false);
-document.getElementById("contenido").innerHTML += "<p><strong>Comparación 5 === false:</strong> " + (5 === false) + "</p>";
-
-let sumaPrecios = 0;
-for (let i = 0; i < precios.length; i++) {
-    sumaPrecios += precios[i];
+let opciones = "";
+for(let i = 0; i < programas.length; i++) {
+    let nombrePrograma = programas[i];
+    let precio = preciosBase[nombrePrograma];
+    opciones += `<option value="${nombrePrograma}">${nombrePrograma} - Desde Bs ${precio}</option>`;
 }
-let promedioPrecios = sumaPrecios / precios.length;
-console.log("Promedio de precios:", promedioPrecios.toFixed(3));
 
-if (estaActivo === true) {
-    console.log("El negocio está ACTIVO.");
+let formularioHTML = `
+    <h2>Cotiza tu proyecto</h2>
+    <p>Selecciona el tipo de proyecto que necesitas:</p>
+    <select id="tipoProyecto">
+        ${opciones}
+    </select>
+    <label>¿Necesitas soporte adicional?</label>
+    <select id="soporte">
+        <option value="no">Sin soporte</option>
+        <option value="basico">Soporte básico (+20%)</option>
+        <option value="premium">Soporte premium (+40%)</option>
+    </select>
+    <label>¿Cuántos módulos o secciones necesitas? (1-10)</label>
+    <input type="number" id="modulos" min="1"x max="10" value="1">
+    <button onclick="calcularCosto()">Calcular costo aproximado</button>
+    <div id="resultadoCotizacion"></div>
+`;
+
+document.getElementById("formulario").innerHTML = formularioHTML;
+
+function calcularCosto() {
+    let tipo = document.getElementById("tipoProyecto").value;
+    let soporte = document.getElementById("soporte").value;
+    let modulos = parseInt(document.getElementById("modulos").value);
+    
+    let precioBase = preciosBase[tipo];
+    let tiempoBase = tiemposBase[tipo];
+    
+    let multiplicadorModulos = 1;
+    if(modulos > 5) {
+        multiplicadorModulos = 1.5;
+    } else if(modulos > 3) {
+        multiplicadorModulos = 1.2;
+    }
+    
+    let costo = precioBase * multiplicadorModulos;
+    let tiempo = tiempoBase;
+    
+    if(modulos > 5) {
+        tiempo = tiempoBase + 10;
+    } else if(modulos > 3) {
+        tiempo = tiempoBase + 5;
+    }
+    
+    let porcentajeSoporte = 0;
+    switch(soporte) {
+        case "basico":
+            porcentajeSoporte = 0.2;
+            break;
+        case "premium":
+            porcentajeSoporte = 0.4;
+            break;
+        default:
+            porcentajeSoporte = 0;
+    }
+    
+    costo = costo + (costo * porcentajeSoporte);
+    
+    let resultado = `
+        <h3>Resultado de cotización</h3>
+        <p>Tipo de proyecto: ${tipo}</p>
+        <p>Módulos/secciones: ${modulos}</p>
+        <p>Soporte: ${soporte}</p>
+        <p>Tiempo estimado: ${tiempo} días hábiles</p>
+        <p><strong>Costo aproximado: Bs ${costo}</strong></p>
+    `;
+    
+    document.getElementById("resultadoCotizacion").innerHTML = resultado;
+    
+    console.log("Cotización generada:");
+    console.log("Tipo:", tipo);
+    console.log("Costo final:", costo);
+    console.log("Tiempo:", tiempo);
+}
+
+let preguntar = prompt("¿Quieres saber qué tipo de software puedo desarrollar para ti? (si/no)");
+if(preguntar === "si" || preguntar === "sí") {
+    let servicio = prompt("Elige una opción:\n1. Pagina web\n2. Programa escritorio\n3. Migracion sistema\n4. Base datos\n5. Entrenamiento IA");
+    switch(servicio) {
+        case "1":
+            alert("Una pagina web cuesta desde Bs 2,000 y tarda 5 dias. Incluye diseño responsive.");
+            break;
+        case "2":
+            alert("Un programa de escritorio cuesta desde Bs 5,000 y tarda 15 dias. Incluye interfaz personalizada.");
+            break;
+        case "3":
+            alert("Una migracion de sistema cuesta desde Bs 8,000 y tarda 20 dias. Incluye respaldo y pruebas.");
+            break;
+        case "4":
+            alert("Una base de datos cuesta desde Bs 3,000 y tarda 8 dias. Incluye optimizacion y seguridad.");
+            break;
+        case "5":
+            alert("Entrenamiento de IA cuesta desde Bs 10,000 y tarda 30 dias. Incluye modelo personalizado.");
+            break;
+        default:
+            alert("Opcion no valida. Contactame directamente para una cotizacion personalizada.");
+    }
 } else {
-    console.log("El negocio está INACTIVO.");
+    alert("Gracias por visitar JociroPy. Cuando estes listo, aqui estoy para ayudarte.");
 }
 
-document.getElementById("contenido").innerHTML += "<h2>Información del emprendimiento</h2>";
-document.getElementById("contenido").innerHTML += "<p><strong>Emprendedor:</strong> " + nombreEmprendedor + " (tipo: " + typeof nombreEmprendedor + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>Negocio:</strong> " + nombreNegocio + " (tipo: " + typeof nombreNegocio + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>Rubro:</strong> " + rubro + " (tipo: " + typeof rubro + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>Año de fundación:</strong> " + añoFundacion + " (tipo: " + typeof añoFundacion + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>Productos:</strong> " + productos + " (tipo: " + typeof productos + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>Precios:</strong> " + precios + " (tipo: " + typeof precios + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>¿Activo?</strong> " + estaActivo + " (tipo: " + typeof estaActivo + ")</p>";
-document.getElementById("contenido").innerHTML += "<p><strong>Calificación:</strong> " + calificacion + " (tipo: " + typeof calificacion + ")</p>";
-document.getElementById("contenido").innerHTML += "<h3>Total de productos disponibles: " + totalProductos + "</h3>";
-document.getElementById("contenido").innerHTML += "<h3>Promedio de precios: Bs " + promedioPrecios.toFixed(3) + "</h3>";
-
-if (estaActivo) {
-    document.getElementById("contenido").innerHTML += "<h3 style='color: lightgreen;'>El negocio está ACTIVO. Aceptamos nuevos proyectos.</h3>";
-} else {
-    document.getElementById("contenido").innerHTML += "<h3 style='color: orange;'>El negocio está INACTIVO. Contacta para más información.</h3>";
-}
+console.log("=== DATOS DEL EMPRENDEDOR ===");
+console.log("Nombre:", nombreEmprendedor, "Tipo:", typeof nombreEmprendedor);
+console.log("Negocio:", nombreNegocio, "Tipo:", typeof nombreNegocio);
+console.log("Experiencia:", añosExperiencia, "Tipo:", typeof añosExperiencia);
+console.log("Programas:", programas, "Tipo:", typeof programas);
+console.log("Certificaciones:", certificaciones, "Tipo:", typeof certificaciones);

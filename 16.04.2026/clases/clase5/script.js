@@ -16,32 +16,9 @@ switch (menu) {
         resultado = "<p>Elegiste Consultoría. Contáctanos para cotizar.</p>";
         break;
     default:
-        resultado = "<p>Opción no válida. Recarga la página y elige 1, 2, 3 o 4.</p>";
+        resultado = "<p>Opción no válida. Elige 1, 2, 3 o 4.</p>";
 }
 
-let dia = new Date().getDay();
-let mensajeDia = "";
-
-switch (dia) {
-    case 0:
-        mensajeDia = "Domingo - Cerrados";
-        break;
-    case 6:
-        mensajeDia = "Sábado - 9am a 1pm";
-        break;
-    default:
-        mensajeDia = "Lunes a Viernes - 9am a 6pm";
-}
-
-document.getElementById("contenido").innerHTML = `
-    <p><strong>Tu elección:</strong></p>
-    ${resultado}
-    <hr>
-    <p><strong>Horario:</strong> ${mensajeDia}</p>
-    <hr>
-    <p><strong>Ejercicio 1:</strong> Crea un switch que pregunte el mes (1-12) y muestre la estación.</p>
-    <p><strong>Ejercicio 2:</strong> Pregunta el día de la semana y muestra si es laboral.</p>
-`;
+document.getElementById("contenido").innerHTML = resultado;
 
 console.log("Opción elegida:", menu);
-console.log("Día de la semana:", dia);
