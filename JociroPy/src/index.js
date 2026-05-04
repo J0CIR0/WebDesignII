@@ -1,10 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const usuarioRoutes = require('../routes/usuarioRoutes');
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/usuarios', usuarioRoutes);
 app.get('/api/health', (req, res) => {
     res.json({
         status: 'ya da',
@@ -17,6 +19,7 @@ app.get('/api', (req, res) => {
         mensaje: 'API de JociroPY funcionando',
         rutas_disponibles: [
             'GET /api/health',
+            'GET /api/usuarios/perfil',
             'POST /api/usuarios/registro',
             'POST /api/usuarios/login',
             'GET /api/productos',

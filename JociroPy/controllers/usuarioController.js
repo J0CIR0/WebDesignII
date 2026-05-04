@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../src/config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -94,4 +94,26 @@ const loginUsuario = async (req, res) => {
     }
 };
 
-module.exports = { registrarUsuario, loginUsuario };
+const obtenerPerfil = async (req, res) => {
+    try {
+        const usuarioId = req.usuarioId;
+
+        const [usuarios] = await db.promise().query(
+            'SELECT id, nombre, email, created_at FROM usuarios WHERE id = ?',
+            [usuarioId]
+        );
+
+        if (usuarios.length === 0) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
+        res.json({
+            usuario: usuarios[0]
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: 'Error en el servidor' });
+    }
+};
+
+module.exports = { registrarUsuario, loginUsuario, obtenerPerfil };
