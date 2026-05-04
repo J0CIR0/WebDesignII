@@ -14,7 +14,7 @@ app.get('/api/health', (req, res) => {
 });
 app.get('/api', (req, res) => {
     res.json({
-        mensaje: 'API de DigitalCorp funcionando',
+        mensaje: 'API de JociroPY funcionando',
         rutas_disponibles: [
             'GET /api/health',
             'POST /api/usuarios/registro',

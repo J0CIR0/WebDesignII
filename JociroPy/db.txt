@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS web4community_db;
-USE web4community_db;
+CREATE DATABASE IF NOT EXISTS jociropydb;
+USE jociropydb;
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS productos (
 );
 
 INSERT INTO usuarios (nombre, email, password) VALUES 
-('Josue, 'clarosrocajosue@gmail.com', '$2a$10$N9qo8uOickgx2ZMRZoMy.Mqr4D9W2YqY5jQnQ6M8YVvXyVvXyVvX');
+('Josue', 'clarosrocajosue@gmail.com', '$2a$10$N9qo8uOickgx2ZMRZoMy.Mqr4D9W2YqY5jQnQ6M8YVvXyVvXyVvX');
 
 SHOW TABLES;
 
