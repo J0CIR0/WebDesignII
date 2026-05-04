@@ -1,0 +1,23 @@
+node_modules/
+package-lock.json
+
+.env
+.env.local
+.env.*.local
+
+.DS_Store
+Thumbs.db
+
+logs/
+*.log
+npm-debug.log*
+.vscode/
+.idea/
+*.swp
+*.swo
+
+dist/
+build/
+
+*.tmp
+*.temp" > .gitignore
