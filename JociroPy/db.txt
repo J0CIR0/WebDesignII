@@ -24,6 +24,69 @@ CREATE TABLE IF NOT EXISTS productos (
 INSERT INTO usuarios (nombre, email, password) VALUES 
 ('Josue', 'clarosrocajosue@gmail.com', '$2a$10$N9qo8uOickgx2ZMRZoMy.Mqr4D9W2YqY5jQnQ6M8YVvXyVvXyVvX');
 
-SHOW TABLES;
+-- ==============================================
+-- MÓDULO 1: CRUD DE PRODUCTOS NORMAL (ya lo tienes)
+-- ==============================================
+-- Tabla productos (existe, se mantiene)
+CREATE TABLE IF NOT EXISTS productos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    usuario_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
 
-SELECT * FROM usuarios;
+-- ==============================================
+-- MÓDULO 2: SISTEMA DE SUBASTAS (nuevo)
+-- ==============================================
+-- Tabla de SUBASTAS
+CREATE TABLE IF NOT EXISTS subastas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    foto_url VARCHAR(500),
+    video_url VARCHAR(500),
+    precio_inicial DECIMAL(10,2) NOT NULL,
+    precio_minimo DECIMAL(10,2) NOT NULL,
+    duracion_horas INT NOT NULL DEFAULT 24,
+    tiempo_extra_minutos INT NOT NULL DEFAULT 5,
+    fecha_inicio DATETIME NOT NULL,
+    fecha_fin DATETIME NOT NULL,
+    activa BOOLEAN DEFAULT TRUE,
+    usuario_id INT NOT NULL,
+    ganador_id INT NULL,
+    oferta_actual DECIMAL(10,2) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (ganador_id) REFERENCES usuarios(id)
+);
+
+-- Tabla de OFERTAS (pujas)
+CREATE TABLE IF NOT EXISTS ofertas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    subasta_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (subasta_id) REFERENCES subastas(id) ON DELETE CASCADE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+-- Tabla de BILLETERA VIRTUAL (solo para subastas)
+ALTER TABLE usuarios ADD COLUMN saldo_ganacoins DECIMAL(10,2) DEFAULT 0;
+
+-- Tabla de TRANSACCIONES
+CREATE TABLE IF NOT EXISTS transacciones (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    tipo ENUM('compra', 'devolucion', 'pago_subasta') NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
+    descripcion VARCHAR(255),
+    subasta_id INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);

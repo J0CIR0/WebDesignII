@@ -1,14 +1,11 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-
 const verificarToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    
     if (!token) {
         return res.status(401).json({ mensaje: 'Acceso denegado. No se proporciono token' });
     }
-    
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.usuarioId = decoded.id;
@@ -17,5 +14,4 @@ const verificarToken = (req, res, next) => {
         return res.status(403).json({ mensaje: 'Token invalido o expirado' });
     }
 };
-
 module.exports = verificarToken;

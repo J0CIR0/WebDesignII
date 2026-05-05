@@ -2,38 +2,30 @@ const db = require('../src/config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-
 const registrarUsuario = async (req, res) => {
     try {
         const { nombre, email, password } = req.body;
-        
         if (!nombre || !email || !password) {
             return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
         }
-        
         const [usuariosExistentes] = await db.promise().query(
             'SELECT * FROM usuarios WHERE email = ?',
             [email]
         );
-        
         if (usuariosExistentes.length > 0) {
             return res.status(400).json({ mensaje: 'El correo ya esta registrado' });
         }
-        
         const salt = await bcrypt.genSalt(10);
         const passwordEncriptada = await bcrypt.hash(password, salt);
-        
         const [resultado] = await db.promise().query(
             'INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)',
             [nombre, email, passwordEncriptada]
         );
-        
         const token = jwt.sign(
             { id: resultado.insertId, email: email },
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
-        
         res.status(201).json({
             mensaje: 'Usuario registrado exitosamente',
             token: token,
@@ -48,7 +40,6 @@ const registrarUsuario = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 };
-
 const loginUsuario = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -56,29 +47,24 @@ const loginUsuario = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ mensaje: 'Email y contraseña son obligatorios' });
         }
-        
         const [usuarios] = await db.promise().query(
             'SELECT * FROM usuarios WHERE email = ?',
             [email]
         );
-        
         if (usuarios.length === 0) {
             return res.status(401).json({ mensaje: 'Credenciales invalidas' });
         }
-        
         const usuario = usuarios[0];
         const passwordValida = await bcrypt.compare(password, usuario.password);
         
         if (!passwordValida) {
             return res.status(401).json({ mensaje: 'Credenciales invalidas' });
         }
-        
         const token = jwt.sign(
             { id: usuario.id, email: usuario.email },
             process.env.JWT_SECRET,
             { expiresIn: '7d' }
         );
-        
         res.json({
             mensaje: 'Login exitoso',
             token: token,
@@ -93,20 +79,16 @@ const loginUsuario = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 };
-
 const obtenerPerfil = async (req, res) => {
     try {
         const usuarioId = req.usuarioId;
-
         const [usuarios] = await db.promise().query(
             'SELECT id, nombre, email, created_at FROM usuarios WHERE id = ?',
             [usuarioId]
         );
-
         if (usuarios.length === 0) {
             return res.status(404).json({ mensaje: 'Usuario no encontrado' });
         }
-
         res.json({
             usuario: usuarios[0]
         });
@@ -115,5 +97,4 @@ const obtenerPerfil = async (req, res) => {
         res.status(500).json({ mensaje: 'Error en el servidor' });
     }
 };
-
 module.exports = { registrarUsuario, loginUsuario, obtenerPerfil };
