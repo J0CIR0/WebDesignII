@@ -11,6 +11,6 @@ connection.connect((error) => {
         console.error('Error al conectar a la base de datos:', error);
         return;
     }       
-    console.log('Conexión exitosa');
+    console.log('✅ Conexión exitosa a MySQL');
 });
 module.exports = connection;
