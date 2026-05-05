@@ -98,3 +98,38 @@ const obtenerPerfil = async (req, res) => {
     }
 };
 module.exports = { registrarUsuario, loginUsuario, obtenerPerfil };
+const obtenerSaldo = async (req, res) => {
+    try {
+        const usuarioId = req.usuarioId;
+        const [usuarios] = await db.promise().query(
+            'SELECT saldo_ganacoins FROM usuarios WHERE id = ?',
+            [usuarioId]
+        );
+        res.json({ saldo: usuarios[0].saldo_ganacoins });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al obtener saldo' });
+    }
+};
+
+const recargarCredits = async (req, res) => {
+    try {
+        const usuarioId = req.usuarioId;
+        const { monto } = req.body;
+        
+        await db.promise().query(
+            'UPDATE usuarios SET saldo_ganacoins = saldo_ganacoins + ? WHERE id = ?',
+            [monto, usuarioId]
+        );
+        
+        await db.promise().query(
+            'INSERT INTO transacciones (usuario_id, tipo, monto, descripcion) VALUES (?, "compra_creditos", ?, ?)',
+            [usuarioId, monto, `Recarga de ${monto} GanaCoins`]
+        );
+        
+        res.json({ mensaje: 'Saldo recargado', monto });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al recargar' });
+    }
+};
+
+module.exports = { registrarUsuario, loginUsuario, obtenerPerfil, obtenerSaldo, recargarCredits };
