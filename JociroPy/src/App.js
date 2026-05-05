@@ -6,7 +6,10 @@ import LoginPage from './pages/LoginPage';
 import RegistroPage from './pages/RegistroPage';
 import DashboardPage from './pages/DashboardPage';
 import ProductosPage from './pages/ProductosPage';
+import SubastasPage from './pages/SubastasPage';
+import SubastaDetallePage from './pages/SubastaDetallePage';
 import './App.css';
+
 const RutaProtegida = ({ children }) => {
   const { isAuthenticated, cargando } = useAuth();
   if (cargando) {
@@ -14,6 +17,7 @@ const RutaProtegida = ({ children }) => {
   }
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
+
 function AppRoutes() {
   return (
     <>
@@ -21,26 +25,15 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegistroPage />} />
-        <Route
-          path="/"
-          element={
-            <RutaProtegida>
-              <DashboardPage />
-            </RutaProtegida>
-          }
-        />
-        <Route
-          path="/productos"
-          element={
-            <RutaProtegida>
-              <ProductosPage />
-            </RutaProtegida>
-          }
-        />
+        <Route path="/" element={<RutaProtegida><DashboardPage /></RutaProtegida>} />
+        <Route path="/productos" element={<RutaProtegida><ProductosPage /></RutaProtegida>} />
+        <Route path="/subastas" element={<RutaProtegida><SubastasPage /></RutaProtegida>} />
+        <Route path="/subasta/:id" element={<RutaProtegida><SubastaDetallePage /></RutaProtegida>} />
       </Routes>
     </>
   );
 }
+
 function App() {
   return (
     <Router>
@@ -50,4 +43,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;
