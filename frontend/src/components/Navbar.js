@@ -19,7 +19,6 @@ const Navbar = () => {
       const saldoActual = await billeteraService.obtenerSaldo();
       setSaldo(saldoActual);
     } catch (error) {
-      console.error('Error al cargar saldo');
     }
   };
 
@@ -40,12 +39,12 @@ const Navbar = () => {
               <div className="nav-user">
                 <span className="nav-saldo">{saldo} GanaCoins</span>
                 <span>Hola, {usuario?.nombre}</span>
-                <button onClick={handleLogout} className="nav-logout">Cerrar Sesion</button>
+                <button onClick={handleLogout} className="nav-logout">Salir</button>
               </div>
             </>
           ) : (
             <div className="nav-auth">
-              <Link to="/login" className="nav-link">Iniciar Sesion</Link>
+              <Link to="/login" className="nav-link">Ingresar</Link>
               <Link to="/registro" className="nav-link nav-registro">Registrarse</Link>
             </div>
           )}

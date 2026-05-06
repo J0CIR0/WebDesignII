@@ -27,7 +27,6 @@ const SubastaForm = ({ onGuardar, onCancelar }) => {
       const data = await productoService.obtenerProductos();
       setProductos(data);
     } catch (error) {
-      console.error('Error al cargar productos');
     }
   };
 
