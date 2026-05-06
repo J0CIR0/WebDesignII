@@ -53,7 +53,7 @@ const SubastaDetallePage = () => {
       setSubasta(data.subasta);
       setOfertas(data.ofertas);
     } catch (err) {
-      setError('Error al cargar la subasta');
+      setError(err.response?.data?.mensaje || 'Error al cargar la subasta');
     } finally {
       setCargando(false);
     }
@@ -99,9 +99,9 @@ const SubastaDetallePage = () => {
       <div className="detalle-info">
         <p>{subasta.producto_descripcion}</p>
         <p><strong>Vendedor:</strong> {subasta.vendedor_nombre}</p>
-        <p><strong>Precio inicial:</strong> ${subasta.precio_inicial}</p>
-        <p><strong>Precio minimo:</strong> ${subasta.precio_minimo}</p>
-        <p><strong>Oferta actual:</strong> ${subasta.oferta_actual}</p>
+        <p><strong>Precio inicial:</strong> Bs. {subasta.precio_inicial}</p>
+        <p><strong>Precio minimo:</strong> Bs. {subasta.precio_minimo}</p>
+        <p><strong>Oferta actual:</strong> Bs. {subasta.oferta_actual}</p>
         <p><strong>Tiempo restante:</strong> {tiempoRestante}</p>
       </div>
       {puedePujar && (
@@ -123,7 +123,7 @@ const SubastaDetallePage = () => {
               {ofertas.map((oferta) => (
                 <tr key={oferta.id}>
                   <td>{oferta.usuario_nombre}</td>
-                  <td>${oferta.monto}</td>
+                  <td>Bs. {oferta.monto}</td>
                   <td>{new Date(oferta.created_at).toLocaleString()}</td>
                 </tr>
               ))}

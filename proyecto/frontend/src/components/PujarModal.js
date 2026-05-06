@@ -39,13 +39,13 @@ const PujarModal = ({ subasta, onPujar, onCerrar, cargando }) => {
       <div className="modal-content">
         <h3>Realizar Puja</h3>
         <p>Producto: {subasta.producto_nombre}</p>
-        <p>Oferta actual: ${subasta.oferta_actual}</p>
-        <p>Precio minimo: ${subasta.precio_minimo}</p>
+        <p>Oferta actual: Bs. {subasta.oferta_actual}</p>
+        <p>Precio minimo: Bs. {subasta.precio_minimo}</p>
         {error && <div className="error-mensaje">{error}</div>}
         <div className="montos-sugeridos">
-          <button onClick={() => handlePujarConMonto(montosSugeridos[0])}>+10 (${montosSugeridos[0]})</button>
-          <button onClick={() => handlePujarConMonto(montosSugeridos[1])}>+50 (${montosSugeridos[1]})</button>
-          <button onClick={() => handlePujarConMonto(montosSugeridos[2])}>+100 (${montosSugeridos[2]})</button>
+          <button onClick={() => handlePujarConMonto(montosSugeridos[0])}>+10 (Bs. {montosSugeridos[0]})</button>
+          <button onClick={() => handlePujarConMonto(montosSugeridos[1])}>+50 (Bs. {montosSugeridos[1]})</button>
+          <button onClick={() => handlePujarConMonto(montosSugeridos[2])}>+100 (Bs. {montosSugeridos[2]})</button>
         </div>
         <div className="monto-personalizado">
           <input type="number" placeholder="Monto personalizado" value={montoPersonalizado} onChange={(e) => setMontoPersonalizado(e.target.value)} />

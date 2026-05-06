@@ -16,12 +16,46 @@ const obtenerSubastas = async (req, res) => {
     }
 };
 
+const obtenerSubastaPorId = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const [subastas] = await db.promise().query(
+            `SELECT s.*, p.nombre as producto_nombre, p.descripcion as producto_descripcion,
+                    p.usuario_id as vendedor_id, u.nombre as vendedor_nombre
+             FROM subastas s
+             JOIN productos p ON s.producto_id = p.id
+             JOIN usuarios u ON p.usuario_id = u.id
+             WHERE s.id = ?
+             LIMIT 1`,
+            [id]
+        );
+
+        if (subastas.length === 0) {
+            return res.status(404).json({ mensaje: 'Subasta no encontrada' });
+        }
+
+        const [ofertas] = await db.promise().query(
+            `SELECT o.id, o.monto, o.created_at, u.nombre as usuario_nombre
+             FROM ofertas o
+             JOIN usuarios u ON o.usuario_id = u.id
+             WHERE o.subasta_id = ?
+             ORDER BY o.created_at DESC`,
+            [id]
+        );
+
+        res.json({ subasta: subastas[0], ofertas });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al obtener subasta' });
+    }
+};
+
 const crearSubasta = async (req, res) => {
     try {
         const { producto_id, precio_inicial, precio_minimo, duracion_horas, tiempo_extra_minutos, fecha_inicio } = req.body;
         
         const [productos] = await db.promise().query('SELECT * FROM productos WHERE id = ? AND usuario_id = ?', [producto_id, req.usuarioId]);
-        if (productos.length === 0) {
+        module.exports = { obtenerSubastas, obtenerSubastaPorId, crearSubasta, realizarPuja };
             return res.status(404).json({ mensaje: 'Producto no encontrado' });
         }
 

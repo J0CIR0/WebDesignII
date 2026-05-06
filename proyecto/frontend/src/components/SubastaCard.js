@@ -25,8 +25,8 @@ const SubastaCard = ({ subasta, onClick }) => {
     <div className="subasta-card" onClick={() => onClick(subasta.id)}>
       <h3>{subasta.producto_nombre}</h3>
       <div className="precios">
-        <span>Inicial: ${subasta.precio_inicial}</span>
-        <span>Actual: ${subasta.oferta_actual}</span>
+        <span>Inicial: Bs. {subasta.precio_inicial}</span>
+        <span>Actual: Bs. {subasta.oferta_actual}</span>
       </div>
       <div className="tiempo">Tiempo restante: {tiempoRestante}</div>
       <div>Vendedor: {subasta.vendedor_nombre}</div>
