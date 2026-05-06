@@ -1,38 +1,613 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* Navbar */
+.navbar {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.nav-logo {
+  color: #f1c40f;
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  transition: transform 0.3s;
+}
+
+.nav-logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-menu {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background-color: rgba(241, 196, 15, 0.2);
+  color: #f1c40f;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255,255,255,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+}
+
+.nav-saldo {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+  color: #1a1a2e;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.nav-logout {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: bold;
+}
+
+.nav-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(231,76,60,0.3);
+}
+
+.nav-auth {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-registro {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+/* Contenedores principales */
+.container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+/* Login y Registro */
+.login-container, .registro-container {
+  max-width: 450px;
+  margin: 80px auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.login-container h2, .registro-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+  font-size: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+}
+
+.error-mensaje {
+  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+  color: #721c24;
+  padding: 0.75rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.cargando {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* Header de secciones */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-@keyframes App-logo-spin {
+.header h2 {
+  color: white;
+  font-size: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-nuevo {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.btn-nuevo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(40,167,69,0.3);
+}
+
+/* Grids de productos y subastas */
+.productos-grid, .subastas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* Tarjetas */
+.producto-card, .subasta-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.producto-card:hover, .subasta-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.producto-card h3, .subasta-card h3 {
+  color: #1a1a2e;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.descripcion {
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.precios {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+.precios span:first-child {
+  color: #666;
+}
+
+.precios span:last-child {
+  color: #e67e22;
+  font-size: 1.2rem;
+}
+
+.tiempo {
+  color: #e74c3c;
+  margin: 0.5rem 0;
+  font-weight: bold;
+}
+
+.acciones {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-editar {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  flex: 1;
+  transition: all 0.3s;
+}
+
+.btn-eliminar {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  flex: 1;
+  transition: all 0.3s;
+}
+
+.btn-editar:hover, .btn-eliminar:hover {
+  transform: translateY(-2px);
+}
+
+/* Modales */
+.producto-form-modal, .subasta-form-modal, .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  max-width: 550px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
   from {
-    transform: rotate(0deg);
+    transform: translateY(-50px);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    transform: translateY(0);
+    opacity: 1;
   }
+}
+
+.modal-content h3 {
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.modal-acciones {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-cancelar {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  flex: 1;
+  font-weight: bold;
+}
+
+.btn-guardar {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  flex: 1;
+  font-weight: bold;
+}
+
+/* Detalle de subasta */
+.subasta-detalle {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.detalle-imagen {
+  max-width: 100%;
+  border-radius: 15px;
+  margin: 1rem 0;
+}
+
+.detalle-info {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin: 1.5rem 0;
+}
+
+.detalle-info p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.btn-pujar {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin: 1rem 0;
+  transition: all 0.3s;
+}
+
+.btn-pujar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(40,167,69,0.3);
+}
+
+.btn-volver {
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: all 0.3s;
+}
+
+/* Tabla de ofertas */
+.ofertas-list {
+  margin-top: 2rem;
+}
+
+.ofertas-list h3 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.ofertas-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #f8f9fa;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ofertas-list th, .ofertas-list td {
+  border: 1px solid #dee2e6;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.ofertas-list th {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-weight: bold;
+}
+
+.ofertas-list tr:hover {
+  background: #f1f3f5;
+}
+
+/* Botones de puja */
+.montos-sugeridos {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.montos-sugeridos button {
+  flex: 1;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.montos-sugeridos button:hover {
+  transform: translateY(-2px);
+}
+
+.monto-personalizado {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.monto-personalizado input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.monto-personalizado button {
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-cerrar {
+  width: 100%;
+  background: linear-gradient(135deg, #6c757d, #5a6268);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+/* Estados vacíos */
+.sin-productos, .sin-subastas {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 20px;
+  color: #666;
+}
+
+.sin-productos p, .sin-subastas p {
+  margin: 0.5rem 0;
+}
+
+/* Dashboard */
+.dashboard {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.dashboard h1 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+.dashboard ul {
+  margin-top: 1rem;
+  margin-left: 2rem;
+}
+
+.dashboard li {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+/* Link button */
+.switch-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #667eea;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.link-button:hover {
+  color: #764ba2;
 }
