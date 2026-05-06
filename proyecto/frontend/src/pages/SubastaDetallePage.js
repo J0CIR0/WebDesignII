@@ -117,14 +117,14 @@ const SubastaDetallePage = () => {
         ) : (
           <table>
             <thead>
-              <tr><th>Usuario</th><th>Monto</th><th>Fecha</th></tr>
+              <tr><th>Usuario</th><th>Monto</th><th>Referencia</th></tr>
             </thead>
             <tbody>
               {ofertas.map((oferta) => (
                 <tr key={oferta.id}>
                   <td>{oferta.usuario_nombre}</td>
                   <td>Bs. {oferta.monto}</td>
-                  <td>{new Date(oferta.created_at).toLocaleString()}</td>
+                  <td>#{oferta.id}</td>
                 </tr>
               ))}
             </tbody>

@@ -36,11 +36,11 @@ const obtenerSubastaPorId = async (req, res) => {
         }
 
         const [ofertas] = await db.promise().query(
-            `SELECT o.id, o.monto, o.created_at, u.nombre as usuario_nombre
+            `SELECT o.id, o.monto, u.nombre as usuario_nombre
              FROM ofertas o
              JOIN usuarios u ON o.usuario_id = u.id
              WHERE o.subasta_id = ?
-             ORDER BY o.created_at DESC`,
+             ORDER BY o.id DESC`,
             [id]
         );
 
@@ -55,7 +55,7 @@ const crearSubasta = async (req, res) => {
         const { producto_id, precio_inicial, precio_minimo, duracion_horas, tiempo_extra_minutos, fecha_inicio } = req.body;
         
         const [productos] = await db.promise().query('SELECT * FROM productos WHERE id = ? AND usuario_id = ?', [producto_id, req.usuarioId]);
-        module.exports = { obtenerSubastas, obtenerSubastaPorId, crearSubasta, realizarPuja };
+        if (productos.length === 0) {
             return res.status(404).json({ mensaje: 'Producto no encontrado' });
         }
 
@@ -120,4 +120,4 @@ const realizarPuja = async (req, res) => {
     }
 };
 
-module.exports = { obtenerSubastas, crearSubasta, realizarPuja };
+module.exports = { obtenerSubastas, obtenerSubastaPorId, crearSubasta, realizarPuja };
