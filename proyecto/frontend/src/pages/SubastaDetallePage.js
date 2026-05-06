@@ -94,7 +94,7 @@ const SubastaDetallePage = () => {
 
   return (
     <div className="subasta-detalle">
-      <button className="btn-volver" onClick={() => navigate('/subastas')}>← Volver</button>
+      <button className="btn-volver" onClick={() => navigate('/subastas')}>Volver</button>
       <h2>{subasta.producto_nombre}</h2>
       <div className="detalle-info">
         <p>{subasta.producto_descripcion}</p>

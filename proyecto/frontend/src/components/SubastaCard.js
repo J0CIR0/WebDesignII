@@ -28,7 +28,7 @@ const SubastaCard = ({ subasta, onClick }) => {
         <span>Inicial: ${subasta.precio_inicial}</span>
         <span>Actual: ${subasta.oferta_actual}</span>
       </div>
-      <div className="tiempo">⏰ {tiempoRestante}</div>
+      <div className="tiempo">Tiempo restante: {tiempoRestante}</div>
       <div>Vendedor: {subasta.vendedor_nombre}</div>
     </div>
   );

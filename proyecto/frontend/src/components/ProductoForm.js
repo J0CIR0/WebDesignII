@@ -48,7 +48,7 @@ const ProductoForm = ({ productoInicial, onGuardar, onCancelar }) => {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Precio</label>
+              <label>Precio (Bs.)</label>
               <input type="number" name="precio_fijo" value={formData.precio_fijo} onChange={handleChange} step="0.01" required />
             </div>
             <div className="form-group">

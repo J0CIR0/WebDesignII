@@ -57,7 +57,7 @@ const SubastaForm = ({ onGuardar, onCancelar }) => {
             <select name="producto_id" value={formData.producto_id} onChange={handleChange} required>
               <option value="">Seleccionar producto</option>
               {productos.map(producto => (
-                <option key={producto.id} value={producto.id}>{producto.nombre} - ${producto.precio_fijo}</option>
+                <option key={producto.id} value={producto.id}>{producto.nombre} - Bs. {producto.precio_fijo}</option>
               ))}
             </select>
           </div>
