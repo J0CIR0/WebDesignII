@@ -1,0 +1,655 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #f4f4f4;
+  --surface: #ffffff;
+  --surface-strong: #f7f7f7;
+  --border: #d9d9d9;
+  --border-strong: #bdbdbd;
+  --text: #111111;
+  --muted: #6b6b6b;
+  --muted-strong: #4d4d4d;
+  --ink: #1f1f1f;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  --shadow-strong: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(0, 0, 0, 0.06), transparent 42%),
+    linear-gradient(180deg, #f8f8f8 0%, #ededed 100%);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(17, 17, 17, 0.95);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.nav-container,
+.container {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.nav-logo {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav-menu,
+.nav-auth,
+.nav-user,
+.acciones,
+.modal-acciones,
+.montos-sugeridos,
+.monto-personalizado,
+.form-row,
+.header {
+  display: flex;
+  gap: 0.85rem;
+}
+
+.nav-menu,
+.nav-user {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-link,
+.nav-logout,
+.nav-registro,
+.btn-nuevo,
+.btn-editar,
+.btn-eliminar,
+.btn-guardar,
+.btn-cancelar,
+.btn-pujar,
+.btn-volver,
+.btn-cerrar,
+.montos-sugeridos button,
+.monto-personalizado button,
+.link-button,
+button[type="submit"] {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+  padding: 0.6rem 0.95rem;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-link:hover,
+.link-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-user {
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+.nav-saldo {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: #f3f3f3;
+  color: #111;
+  font-weight: 700;
+}
+
+.nav-logout,
+.btn-eliminar,
+.btn-cancelar,
+.btn-volver,
+.btn-cerrar {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.nav-logout:hover,
+.btn-eliminar:hover,
+.btn-cancelar:hover,
+.btn-volver:hover,
+.btn-cerrar:hover {
+  background: #111;
+  transform: translateY(-1px);
+}
+
+.nav-auth {
+  align-items: center;
+}
+
+.nav-registro,
+.btn-nuevo,
+.btn-guardar,
+.btn-pujar,
+.montos-sugeridos button,
+.monto-personalizado button,
+button[type="submit"] {
+  background: #111;
+  color: #fff;
+  padding: 0.8rem 1.2rem;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+
+.nav-registro:hover,
+.btn-nuevo:hover,
+.btn-guardar:hover,
+.btn-pujar:hover,
+.montos-sugeridos button:hover,
+.monto-personalizado button:hover,
+button[type="submit"]:hover {
+  background: #2a2a2a;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-strong);
+}
+
+.container {
+  padding: 2rem 0 3rem;
+}
+
+.login-container,
+.registro-container,
+.dashboard,
+.subasta-detalle,
+.sin-productos,
+.sin-subastas {
+  width: min(100%, 760px);
+  margin: 2rem auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.login-container,
+.registro-container {
+  width: min(100%, 460px);
+  margin-top: 4.5rem;
+}
+
+.login-container h2,
+.registro-container h2,
+.modal-content h3,
+.dashboard h1,
+.subasta-detalle h2,
+.header h2,
+.ofertas-list h3,
+.producto-card h3,
+.subasta-card h3 {
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.login-container h2,
+.registro-container h2,
+.modal-content h3,
+.subasta-detalle h2,
+.dashboard h1 {
+  margin-bottom: 1.25rem;
+}
+
+.login-container h2,
+.registro-container h2,
+.dashboard h1,
+.header h2,
+.subasta-detalle h2 {
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+.form-group {
+  margin-bottom: 1.1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: var(--muted-strong);
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.monto-personalizado input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fff;
+  padding: 0.85rem 0.95rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.monto-personalizado input:focus {
+  border-color: #111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+}
+
+button[type="submit"] {
+  width: 100%;
+  border: 1px solid #111;
+}
+
+.error-mensaje {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: #efefef;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.cargando {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.header {
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.productos-container,
+.subastas-container {
+  width: 100%;
+}
+
+.productos-grid,
+.subastas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.producto-card,
+.subasta-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.35rem;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.producto-card:hover,
+.subasta-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-strong);
+}
+
+.descripcion,
+.stock,
+.detalle-info p,
+.dashboard li,
+.sin-productos,
+.sin-subastas,
+.tu-subasta-info,
+.ofertas-list td,
+.ofertas-list p,
+.subasta-card div {
+  color: var(--muted-strong);
+}
+
+.precio,
+.precios span:last-child {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.precios {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.acciones {
+  margin-top: 1rem;
+}
+
+.btn-editar {
+  background: #f0f0f0;
+  color: #111;
+  border-color: var(--border);
+  padding: 0.7rem 1rem;
+  flex: 1;
+}
+
+.btn-editar:hover {
+  background: #e5e5e5;
+  transform: translateY(-1px);
+}
+
+.btn-eliminar {
+  padding: 0.7rem 1rem;
+  flex: 1;
+}
+
+.producto-form-modal,
+.subasta-form-modal,
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(17, 17, 17, 0.72);
+  z-index: 1000;
+}
+
+.modal-content {
+  width: min(100%, 560px);
+  max-height: min(90vh, 900px);
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-strong);
+}
+
+.form-row {
+  flex-wrap: wrap;
+}
+
+.form-row .form-group {
+  flex: 1 1 220px;
+}
+
+.modal-acciones {
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.btn-cancelar,
+.btn-cerrar,
+.btn-volver {
+  background: #ececec;
+  color: #111;
+  border-color: var(--border);
+}
+
+.btn-cancelar:hover,
+.btn-cerrar:hover,
+.btn-volver:hover {
+  background: #dedede;
+}
+
+.subasta-detalle {
+  max-width: 920px;
+}
+
+.detalle-info {
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.25rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.detalle-info p {
+  margin: 0.45rem 0;
+}
+
+.btn-volver {
+  width: auto;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1rem;
+}
+
+.btn-pujar {
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid #111;
+}
+
+.ofertas-list {
+  margin-top: 1.5rem;
+}
+
+.ofertas-list table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.ofertas-list th,
+.ofertas-list td {
+  padding: 0.8rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.ofertas-list th {
+  background: #111;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ofertas-list tr:hover {
+  background: #f5f5f5;
+}
+
+.montos-sugeridos {
+  margin: 1.25rem 0;
+  flex-wrap: wrap;
+}
+
+.montos-sugeridos button {
+  flex: 1 1 120px;
+}
+
+.monto-personalizado {
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.monto-personalizado input {
+  flex: 1 1 220px;
+}
+
+.monto-personalizado button {
+  flex: 0 0 auto;
+}
+
+.sin-productos,
+.sin-subastas,
+.dashboard {
+  text-align: left;
+}
+
+.sin-productos,
+.sin-subastas {
+  color: var(--muted-strong);
+}
+
+.sin-productos p,
+.sin-subastas p,
+.dashboard li {
+  margin: 0.45rem 0;
+}
+
+.dashboard ul {
+  margin-left: 1.1rem;
+  margin-top: 0.75rem;
+}
+
+.switch-link {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--muted-strong);
+}
+
+.link-button {
+  padding: 0.15rem 0.35rem;
+  background: transparent;
+  color: #111;
+  border-bottom: 1px solid #111;
+  border-radius: 0;
+  text-decoration: none;
+  box-shadow: none;
+}
+
+.link-button:hover {
+  background: transparent;
+  color: #444;
+  border-color: #444;
+  box-shadow: none;
+}
+
+.tu-subasta-info {
+  margin-top: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-strong);
+}
+
+.detalle-imagen {
+  display: block;
+  max-width: 100%;
+  margin: 1rem 0;
+  border-radius: 16px;
+}
+
+@media (max-width: 900px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-user {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 18px;
+  }
+
+  .productos-grid,
+  .subastas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .container,
+  .nav-container {
+    width: min(100%, calc(100% - 1rem));
+  }
+
+  .container {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+  .login-container,
+  .registro-container,
+  .dashboard,
+  .subasta-detalle,
+  .sin-productos,
+  .sin-subastas,
+  .modal-content {
+    padding: 1.25rem;
+    border-radius: 18px;
+  }
+
+  .nav-menu,
+  .nav-auth,
+  .nav-user,
+  .acciones,
+  .modal-acciones,
+  .montos-sugeridos,
+  .monto-personalizado {
+    width: 100%;
+  }
+
+  .nav-link,
+  .nav-logout,
+  .nav-registro {
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-user {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
