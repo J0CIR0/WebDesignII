@@ -4,8 +4,7 @@ const ProductoForm = ({ productoInicial, onGuardar, onCancelar }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
-    precio_fijo: '',
-    stock: ''
+    precio_fijo: ''
   });
 
   useEffect(() => {
@@ -13,8 +12,7 @@ const ProductoForm = ({ productoInicial, onGuardar, onCancelar }) => {
       setFormData({
         nombre: productoInicial.nombre,
         descripcion: productoInicial.descripcion || '',
-        precio_fijo: productoInicial.precio_fijo,
-        stock: productoInicial.stock
+        precio_fijo: productoInicial.precio_fijo
       });
     }
   }, [productoInicial]);
@@ -28,8 +26,7 @@ const ProductoForm = ({ productoInicial, onGuardar, onCancelar }) => {
     e.preventDefault();
     onGuardar({
       ...formData,
-      precio_fijo: parseFloat(formData.precio_fijo),
-      stock: parseInt(formData.stock) || 0
+      precio_fijo: parseFloat(formData.precio_fijo)
     });
   };
 
@@ -50,10 +47,6 @@ const ProductoForm = ({ productoInicial, onGuardar, onCancelar }) => {
             <div className="form-group">
               <label>Precio (Bs.)</label>
               <input type="number" name="precio_fijo" value={formData.precio_fijo} onChange={handleChange} step="0.01" required />
-            </div>
-            <div className="form-group">
-              <label>Stock</label>
-              <input type="number" name="stock" value={formData.stock} onChange={handleChange} min="0" />
             </div>
           </div>
           <div className="modal-acciones">

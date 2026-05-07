@@ -1,19 +1,31 @@
 # Dependencias
 node_modules/
+backend/node_modules/
+frontend/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 
 # Variables de entorno
 .env
 .env.local
 .env.*.local
+backend/.env
+backend/.env.local
+frontend/.env
+frontend/.env.local
+*.env
+*.env.*
 
 # Builds
 dist/
 build/
+frontend/build/
+backend/build/
+backend/public/build/
 *.log
+*.out
+*.err
 
 # Editor
 .vscode/
@@ -27,6 +39,13 @@ Thumbs.db
 # Base de datos local
 *.sqlite
 *.db
+*.sqlite3
+
+# Coverage y cache
+coverage/
+.cache/
+.parcel-cache/
+.eslintcache
 
 # Sistema operativo
 .DS_Store

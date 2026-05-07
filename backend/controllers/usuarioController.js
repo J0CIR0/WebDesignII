@@ -14,7 +14,7 @@ const registrarUsuario = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const [resultado] = await db.promise().query(
-            'INSERT INTO usuarios (nombre, email, password, saldo_ganacoins) VALUES (?, ?, ?, 1000)',
+            'INSERT INTO usuarios (nombre, email, password, saldo_ganacoins) VALUES (?, ?, ?, 0)',
             [nombre, email, hashedPassword]
         );
 
@@ -57,10 +57,38 @@ const loginUsuario = async (req, res) => {
 const obtenerSaldo = async (req, res) => {
     try {
         const [usuarios] = await db.promise().query('SELECT saldo_ganacoins FROM usuarios WHERE id = ?', [req.usuarioId]);
+        if (usuarios.length === 0) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
         res.json({ saldo: usuarios[0].saldo_ganacoins });
     } catch (error) {
         res.status(500).json({ mensaje: 'Error al obtener saldo' });
     }
 };
 
-module.exports = { registrarUsuario, loginUsuario, obtenerSaldo };
+const agregarSaldo = async (req, res) => {
+    try {
+        const { monto } = req.body;
+
+        if (monto === undefined || Number.isNaN(Number(monto)) || Number(monto) <= 0) {
+            return res.status(400).json({ mensaje: 'El monto debe ser mayor a 0' });
+        }
+
+        const incremento = Number(monto);
+        const [resultado] = await db.promise().query(
+            'UPDATE usuarios SET saldo_ganacoins = saldo_ganacoins + ? WHERE id = ?',
+            [incremento, req.usuarioId]
+        );
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+        }
+
+        const [usuarios] = await db.promise().query('SELECT saldo_ganacoins FROM usuarios WHERE id = ?', [req.usuarioId]);
+        res.json({ mensaje: 'Saldo actualizado', saldo: usuarios[0].saldo_ganacoins });
+    } catch (error) {
+        res.status(500).json({ mensaje: 'Error al actualizar saldo' });
+    }
+};
+
+module.exports = { registrarUsuario, loginUsuario, obtenerSaldo, agregarSaldo };

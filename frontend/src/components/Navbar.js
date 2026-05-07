@@ -14,6 +14,17 @@ const Navbar = () => {
     }
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    const actualizarSaldo = () => {
+      if (isAuthenticated) {
+        cargarSaldo();
+      }
+    };
+
+    window.addEventListener('saldoActualizado', actualizarSaldo);
+    return () => window.removeEventListener('saldoActualizado', actualizarSaldo);
+  }, [isAuthenticated]);
+
   const cargarSaldo = async () => {
     try {
       const saldoActual = await billeteraService.obtenerSaldo();
@@ -36,6 +47,7 @@ const Navbar = () => {
             <>
               <Link to="/productos" className="nav-link">Productos</Link>
               <Link to="/subastas" className="nav-link">Subastas</Link>
+              <Link to="/perfil" className="nav-link">Perfil</Link>
               <div className="nav-user">
                 <span className="nav-saldo">{saldo} GanaCoins</span>
                 <span>Hola, {usuario?.nombre}</span>

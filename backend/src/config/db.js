@@ -8,7 +8,7 @@ if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_NAME) {
     process.exit(1);
 }
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD || '',
@@ -18,30 +18,10 @@ const connection = mysql.createConnection({
     queueLimit: 0
 });
 
-connection.connect((error) => {
-    if (error) {
-        console.error('Error de conexión a MySQL:', error.message);
-        process.exit(1);
-    }
-});
+pool.on('connection', () => {});
 
-connection.on('error', (error) => {
+pool.on('error', (error) => {
     console.error('Error en la conexión a MySQL:', error.message);
-    if (error.code === 'PROTOCOL_CONNECTION_LOST') {
-        console.error('Conexión a la BD perdida');
-    }
-    if (error.code === 'PROTOCOL_ERROR') {
-        console.error('Error de protocolo en la BD');
-    }
-    if (error.code === 'ER_CON_COUNT_ERROR') {
-        console.error('Demasiadas conexiones a la BD');
-    }
-    if (error.code === 'ER_ACCESS_DENIED_ERROR') {
-        console.error('Acceso denegado a la BD');
-    }
-    if (error.code === 'ER_BAD_DB_ERROR') {
-        console.error('Base de datos no existe');
-    }
 });
 
-module.exports = connection;
+module.exports = pool;

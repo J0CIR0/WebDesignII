@@ -52,8 +52,13 @@ const obtenerSubastaPorId = async (req, res) => {
 
 const crearSubasta = async (req, res) => {
     try {
-        const { producto_id, precio_inicial, precio_minimo, duracion_horas, tiempo_extra_minutos, fecha_inicio } = req.body;
-        if (!producto_id || !precio_inicial || !duracion_horas) {
+        const { producto_id, precio_inicial, precio_minimo, duracion_horas, duracion_minutos, tiempo_extra_minutos, fecha_inicio } = req.body;
+        const horas = duracion_horas !== undefined && duracion_horas !== '' ? parseInt(duracion_horas, 10) : null;
+        const minutos = duracion_minutos !== undefined && duracion_minutos !== '' ? parseInt(duracion_minutos, 10) : null;
+        const duracionMinutosFinal = Number.isInteger(horas) || Number.isInteger(minutos)
+            ? (Math.max(horas || 0, 0) * 60) + Math.max(minutos || 0, 0)
+            : null;
+        if (!producto_id || !precio_inicial || !duracionMinutosFinal) {
             return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
         }
 
@@ -63,13 +68,15 @@ const crearSubasta = async (req, res) => {
         }
 
         const fechaFin = new Date(fecha_inicio);
-        fechaFin.setHours(fechaFin.getHours() + duracion_horas);
+        fechaFin.setMinutes(fechaFin.getMinutes() + duracionMinutosFinal);
+
+        const duracionHorasToStore = Math.floor(duracionMinutosFinal / 60);
 
         const [resultado] = await db.promise().query(
             `INSERT INTO subastas (producto_id, precio_inicial, precio_minimo, duracion_horas, 
              tiempo_extra_minutos, fecha_inicio, fecha_fin, oferta_actual, activa)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
-            [producto_id, precio_inicial, precio_minimo, duracion_horas, tiempo_extra_minutos, fecha_inicio, fechaFin, precio_inicial]
+            [producto_id, precio_inicial, precio_minimo, duracionHorasToStore, tiempo_extra_minutos, fecha_inicio, fechaFin, precio_inicial]
         );
 
         res.status(201).json({ mensaje: 'Subasta creada', subasta_id: resultado.insertId });
@@ -122,7 +129,6 @@ const realizarPuja = async (req, res) => {
         nuevaFechaFin.setMinutes(nuevaFechaFin.getMinutes() + subasta.tiempo_extra_minutos);
 
         await db.promise().query('UPDATE subastas SET oferta_actual = ?, fecha_fin = ? WHERE id = ?', [monto, nuevaFechaFin, id]);
-        await db.promise().query('UPDATE usuarios SET saldo_ganacoins = saldo_ganacoins - ? WHERE id = ?', [monto, req.usuarioId]);
 
         res.json({ mensaje: 'Puja realizada', nueva_oferta: monto });
     } catch (error) {

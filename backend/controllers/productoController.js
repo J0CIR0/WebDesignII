@@ -14,16 +14,16 @@ const obtenerProductos = async (req, res) => {
 
 const crearProducto = async (req, res) => {
     try {
-        const { nombre, descripcion, precio_fijo, stock } = req.body;
-        if (!nombre || !descripcion || !precio_fijo || stock === undefined) {
+        const { nombre, descripcion, precio_fijo } = req.body;
+        if (!nombre || !descripcion || !precio_fijo) {
             return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
         }
 
         const [resultado] = await db.promise().query(
-            'INSERT INTO productos (nombre, descripcion, precio_fijo, stock, usuario_id) VALUES (?, ?, ?, ?, ?)',
-            [nombre, descripcion, precio_fijo, stock, req.usuarioId]
+            'INSERT INTO productos (nombre, descripcion, precio_fijo, usuario_id) VALUES (?, ?, ?, ?)',
+            [nombre, descripcion, precio_fijo, req.usuarioId]
         );
-        res.status(201).json({ id: resultado.insertId, nombre, descripcion, precio_fijo, stock });
+        res.status(201).json({ id: resultado.insertId, nombre, descripcion, precio_fijo });
     } catch (error) {
         res.status(500).json({ mensaje: 'Error al crear producto', error: error.message });
     }
@@ -32,14 +32,14 @@ const crearProducto = async (req, res) => {
 const actualizarProducto = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nombre, descripcion, precio_fijo, stock } = req.body;
-        if (!nombre || !descripcion || !precio_fijo || stock === undefined) {
+        const { nombre, descripcion, precio_fijo } = req.body;
+        if (!nombre || !descripcion || !precio_fijo) {
             return res.status(400).json({ mensaje: 'Faltan datos requeridos' });
         }
 
         const [resultado] = await db.promise().query(
-            'UPDATE productos SET nombre = ?, descripcion = ?, precio_fijo = ?, stock = ? WHERE id = ? AND usuario_id = ?',
-            [nombre, descripcion, precio_fijo, stock, id, req.usuarioId]
+            'UPDATE productos SET nombre = ?, descripcion = ?, precio_fijo = ? WHERE id = ? AND usuario_id = ?',
+            [nombre, descripcion, precio_fijo, id, req.usuarioId]
         );
 
         if (resultado.affectedRows === 0) {
@@ -53,20 +53,56 @@ const actualizarProducto = async (req, res) => {
 };
 
 const eliminarProducto = async (req, res) => {
+    let connection;
     try {
+        connection = await db.promise().getConnection();
         const { id } = req.params;
-        const [resultado] = await db.promise().query(
+        await connection.beginTransaction();
+
+        const [productos] = await connection.query(
+            'SELECT id FROM productos WHERE id = ? AND usuario_id = ?',
+            [id, req.usuarioId]
+        );
+
+        if (productos.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ mensaje: 'Producto no encontrado o no tienes permiso' });
+        }
+
+        await connection.query(
+            'DELETE FROM ofertas WHERE subasta_id IN (SELECT id FROM subastas WHERE producto_id = ?)',
+            [id]
+        );
+
+        await connection.query(
+            'DELETE FROM subastas WHERE producto_id = ?',
+            [id]
+        );
+
+        const [resultado] = await connection.query(
             'DELETE FROM productos WHERE id = ? AND usuario_id = ?',
             [id, req.usuarioId]
         );
 
         if (resultado.affectedRows === 0) {
+            await connection.rollback();
             return res.status(404).json({ mensaje: 'Producto no encontrado o no tienes permiso' });
         }
 
+        await connection.commit();
         res.json({ mensaje: 'Producto eliminado' });
     } catch (error) {
-        res.status(500).json({ mensaje: 'Error al eliminar producto', error: error.message });
+        if (connection) {
+            await connection.rollback();
+        }
+        console.error('Error en eliminarProducto:', error);
+        const respuestaError = { mensaje: 'Error al eliminar producto', error: error.message };
+        if (process.env.NODE_ENV === 'development') respuestaError.stack = error.stack;
+        res.status(500).json(respuestaError);
+    } finally {
+        if (connection) {
+            connection.release();
+        }
     }
 };
 

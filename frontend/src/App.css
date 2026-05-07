@@ -84,7 +84,6 @@ a {
 .nav-user,
 .acciones,
 .modal-acciones,
-.montos-sugeridos,
 .monto-personalizado,
 .form-row,
 .header {
@@ -173,7 +172,6 @@ button[type="submit"] {
 .btn-nuevo,
 .btn-guardar,
 .btn-pujar,
-.montos-sugeridos button,
 .monto-personalizado button,
 button[type="submit"] {
   background: #111;
@@ -187,7 +185,6 @@ button[type="submit"] {
 .btn-nuevo:hover,
 .btn-guardar:hover,
 .btn-pujar:hover,
-.montos-sugeridos button:hover,
 .monto-personalizado button:hover,
 button[type="submit"]:hover {
   background: #2a2a2a;
@@ -346,7 +343,6 @@ button[type="submit"] {
 }
 
 .descripcion,
-.stock,
 .detalle-info p,
 .dashboard li,
 .sin-productos,
@@ -525,6 +521,23 @@ button[type="submit"] {
 
 .monto-personalizado button {
   flex: 0 0 auto;
+}
+
+.billetera-panel {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-strong);
+}
+
+.billetera-panel p {
+  margin: 0.45rem 0 0.9rem;
+  color: var(--muted-strong);
+}
+
+.billetera-panel button {
+  width: auto;
 }
 
 .sin-productos,

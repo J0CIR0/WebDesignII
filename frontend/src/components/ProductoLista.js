@@ -86,7 +86,15 @@ const ProductoLista = () => {
       ) : (
         <div className="productos-grid">
           {productos.map((producto) => (
-            <ProductoCard key={producto.id} producto={producto} onEditar={setProductoEditando} onEliminar={handleEliminar} />
+            <ProductoCard
+              key={producto.id}
+              producto={producto}
+              onEditar={(productoSeleccionado) => {
+                setProductoEditando(productoSeleccionado);
+                setMostrarFormulario(true);
+              }}
+              onEliminar={handleEliminar}
+            />
           ))}
         </div>
       )}

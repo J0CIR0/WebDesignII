@@ -1,53 +1,46 @@
+# Proyecto de Diseño Web II
+Desarrollado por Josue Claros, Jose Manuel Callecusi, Fabricio Zeballos y Juan Pablo Medina.
+
 # WebDesignII
 
-Plataforma web de subastas desarrollada con React en el frontend y Node.js con Express en el backend. El sistema permite registrar usuarios, iniciar sesion, administrar productos, crear subastas y realizar pujas.
+WebDesignII es una plataforma web de subastas construida con React en el frontend y Node.js con Express y MySQL en el backend. El sistema permite registrar usuarios, administrar productos, crear subastas, pujar por productos de otros usuarios, recargar GanaCoins y consultar un perfil con saldo.
 
-## Contenido
+## Resumen funcional
 
-- Descripcion general
-- Caracteristicas
-- Tecnologias
-- Estructura del proyecto
-- Requisitos previos
-- Configuracion del entorno
-- Configuracion de la base de datos
-- Instalacion y ejecucion
-- Variables de entorno
-- Endpoints de la API
-- Flujo de uso
-- Solucion de problemas
+La aplicación incluye estas funciones principales:
 
-## Descripcion general
-
-WebDesignII es una aplicacion full stack orientada a subastas. El frontend consume una API REST y maneja autenticacion con token JWT almacenado en el navegador. El backend expone rutas para usuarios, productos y subastas, y se conecta a MySQL usando mysql2.
-
-## Caracteristicas
-
-- Registro e inicio de sesion de usuarios
-- Autenticacion con JWT
-- Perfil con saldo de GanaCoins
-- CRUD de productos
-- Creacion y visualizacion de subastas
-- Realizacion de pujas
-- Proteccion de rutas en el frontend
+- Registro e inicio de sesión con JWT.
+- Perfil de usuario con datos personales y saldo de GanaCoins.
+- Recarga manual de saldo para pruebas.
+- CRUD de productos.
+- Creación de subastas asociadas a un producto.
+- Duraciones de subasta en horas y minutos, permitiendo `0` horas y solo minutos.
+- Pujas con validación de saldo suficiente.
+- Extensión automática de la subasta cuando alguien puja al final del tiempo.
+- Finalización automática de subastas con cobro al ganador y abono al vendedor.
+- Eliminación de productos junto con sus subastas y ofertas relacionadas.
+- Protección de rutas privadas en el frontend.
 
 ## Tecnologias
 
 ### Backend
+
 - Node.js
 - Express
 - MySQL
 - mysql2
 - jsonwebtoken
 - bcryptjs
-- dotenv
 - cors
+- dotenv
+- nodemon para desarrollo
 
 ### Frontend
+
 - React
 - React Router
 - Axios
-- React Scripts
+- react-scripts
 
 ## Estructura del proyecto
 
@@ -73,23 +66,68 @@ WebDesignII/
 
 ## Requisitos previos
 
-- Node.js 18 o superior
-- npm
-- MySQL 8 o superior
-- Git opcional para clonar el repositorio
+- Node.js 18 o superior.
+- npm.
+- MySQL 8 o superior.
+- Un editor como VS Code.
 
-## Configuracion del entorno
+## Instalacion
 
-El proyecto se divide en dos aplicaciones independientes:
+### 1. Clonar el repositorio
 
-- `backend/` para la API
-- `frontend/` para la interfaz web
+```bash
+git clone <url-del-repositorio>
+cd WebDesignII
+```
 
-Debes abrir dos terminales durante el desarrollo, una para cada parte.
+### 2. Instalar dependencias del backend
 
-## Configuracion de la base de datos
+```bash
+cd backend
+npm install
+```
 
-Crea una base de datos llamada `proyectodb` y luego ejecuta el siguiente SQL en MySQL Workbench, phpMyAdmin o tu cliente SQL favorito.
+### 3. Instalar dependencias del frontend
+
+En otra terminal:
+
+```bash
+cd frontend
+npm install
+```
+
+## Variables de entorno
+
+### Backend
+
+Crear el archivo `backend/.env` con este contenido base:
+
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=tu_contraseña
+DB_NAME=proyectodb
+JWT_SECRET=una_clave_secreta_segura
+NODE_ENV=development
+```
+
+### Recomendaciones
+
+- No subas archivos `.env` al repositorio.
+- Usa una clave JWT fuerte.
+- Verifica que `DB_NAME` exista en MySQL antes de iniciar el backend.
+
+## Base de datos
+
+La base de datos contiene cuatro tablas principales:
+
+- `usuarios`
+- `productos`
+- `subastas`
+- `ofertas`
+
+### Script base
 
 ```sql
 CREATE DATABASE IF NOT EXISTS proyectodb;
@@ -100,7 +138,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nombre VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    saldo_ganacoins INT DEFAULT 1000,
+    saldo_ganacoins INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -110,7 +148,6 @@ CREATE TABLE IF NOT EXISTS productos (
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
     precio_fijo DECIMAL(10, 2),
-    stock INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
@@ -141,168 +178,161 @@ CREATE TABLE IF NOT EXISTS ofertas (
 );
 ```
 
-## Instalacion y ejecucion
+### Migracion importante
 
-### 1. Instalar dependencias del backend
+Si tu tabla `productos` todavia tiene `stock`, eliminalo:
 
-```bash
-cd backend
-npm install
+```sql
+ALTER TABLE productos DROP COLUMN stock;
 ```
 
-### 2. Configurar el archivo de entorno del backend
+## Como funciona
 
-Crea o edita `backend/.env` con estos valores:
+### Autenticacion
 
-```env
-PORT=5000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=tu_contraseña
-DB_NAME=proyectodb
-JWT_SECRET=una_clave_secreta_segura
-NODE_ENV=development
-```
+- El usuario se registra o inicia sesion.
+- El backend genera un token JWT.
+- El frontend guarda el token y lo usa en cada peticion protegida.
 
-Notas importantes:
-- `JWT_SECRET` no debe quedar vacio.
-- Evita dejar espacios despues del signo igual.
-- `DB_NAME` debe coincidir con la base de datos que creaste.
+### Productos
 
-### 3. Iniciar el backend
+- Cada usuario gestiona sus propios productos.
+- Se pueden crear, editar y eliminar productos.
+- Al eliminar un producto, el backend elimina primero sus subastas y ofertas asociadas para evitar conflictos.
+
+### Subastas
+
+- El usuario selecciona un producto propio.
+- Define precio inicial, precio minimo, duracion y extension automatica.
+- La duracion puede configurarse con horas y minutos.
+- Se permiten subastas de menos de una hora usando `0` horas y solo minutos.
+
+### Pujas
+
+- El usuario ingresa manualmente el monto.
+- El sistema verifica que la puja sea mayor que la oferta actual.
+- El sistema verifica que el usuario tenga saldo suficiente.
+- Si alguien puja en los ultimos segundos, la subasta se extiende automaticamente.
+
+### Cierre automatico
+
+- Un proceso interno revisa subastas vencidas cada pocos segundos.
+- Si existe ganador, se descuenta el saldo al comprador ganador.
+- El mismo monto se acredita al vendedor del producto.
+- La subasta se marca como inactiva.
+
+### Perfil y saldo
+
+- La opcion `Perfil` en el nav muestra los datos del usuario.
+- Tambien muestra el saldo de GanaCoins.
+- Desde ahi se puede recargar saldo de pruebas.
+
+## Ejecucion en desarrollo
+
+### Backend
 
 ```bash
 cd backend
 npm run dev
 ```
 
-El servidor debe quedar disponible en:
-
-```text
-http://localhost:5000
-```
-
-### 4. Instalar dependencias del frontend
-
-Abre otra terminal y ejecuta:
-
-```bash
-cd frontend
-npm install
-```
-
-### 5. Iniciar el frontend
+### Frontend
 
 ```bash
 cd frontend
 npm start
 ```
 
-La aplicacion debe abrirse en:
+### URLs locales
 
-```text
-http://localhost:3000
-```
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
 
-## Variables de entorno
-
-### Backend
-
-| Variable | Descripcion | Ejemplo |
-| --- | --- | --- |
-| `PORT` | Puerto del backend | `5000` |
-| `DB_HOST` | Host de MySQL | `localhost` |
-| `DB_USER` | Usuario de MySQL | `root` |
-| `DB_PASSWORD` | Contrasena de MySQL | `tu_contraseña` |
-| `DB_NAME` | Nombre de la base de datos | `proyectodb` |
-| `JWT_SECRET` | Clave para firmar tokens | `una_clave_secreta_segura` |
-| `NODE_ENV` | Entorno de ejecucion | `development` |
+## Build de produccion
 
 ### Frontend
 
-El frontend usa `frontend/package.json` con proxy a la API:
-
-```json
-"proxy": "http://localhost:5000"
+```bash
+cd frontend
+npm run build
 ```
 
-## Endpoints de la API
+El backend esta configurado para servir el build del frontend desde `frontend/build`.
+
+## Endpoints principales
 
 ### Usuarios
 
 | Metodo | Ruta | Proteccion | Descripcion |
 | --- | --- | --- | --- |
-| `POST` | `/api/usuarios/registro` | No | Registra un nuevo usuario |
-| `POST` | `/api/usuarios/login` | No | Inicia sesion y devuelve un token |
-| `GET` | `/api/usuarios/saldo` | Si | Obtiene el saldo del usuario autenticado |
+| POST | `/api/usuarios/registro` | No | Registra un usuario nuevo |
+| POST | `/api/usuarios/login` | No | Inicia sesion y devuelve JWT |
+| GET | `/api/usuarios/saldo` | Si | Obtiene el saldo actual |
+| POST | `/api/usuarios/saldo/agregar` | Si | Suma saldo al usuario autenticado |
 
 ### Productos
 
 | Metodo | Ruta | Proteccion | Descripcion |
 | --- | --- | --- | --- |
-| `GET` | `/api/productos` | Si | Lista los productos del usuario autenticado |
-| `POST` | `/api/productos` | Si | Crea un producto nuevo |
-| `PUT` | `/api/productos/:id` | Si | Actualiza un producto |
-| `DELETE` | `/api/productos/:id` | Si | Elimina un producto |
+| GET | `/api/productos` | Si | Lista los productos del usuario |
+| POST | `/api/productos` | Si | Crea un producto |
+| PUT | `/api/productos/:id` | Si | Actualiza un producto |
+| DELETE | `/api/productos/:id` | Si | Elimina un producto |
 
 ### Subastas
 
 | Metodo | Ruta | Proteccion | Descripcion |
 | --- | --- | --- | --- |
-| `GET` | `/api/subastas` | No | Lista las subastas activas |
-| `GET` | `/api/subastas/:id` | No | Obtiene el detalle de una subasta |
-| `POST` | `/api/subastas` | Si | Crea una subasta |
-| `POST` | `/api/subastas/:id/pujar` | Si | Realiza una puja |
+| GET | `/api/subastas` | No | Lista subastas activas |
+| GET | `/api/subastas/:id` | No | Obtiene el detalle de una subasta |
+| POST | `/api/subastas` | Si | Crea una subasta |
+| POST | `/api/subastas/:id/pujar` | Si | Realiza una puja |
 
-## Flujo de uso
+## Flujo recomendado de uso
 
-1. Ejecuta MySQL.
-2. Inicia el backend con `npm run dev` dentro de `backend/`.
-3. Inicia el frontend con `npm start` dentro de `frontend/`.
-4. Abre `http://localhost:3000`.
-5. Registra un usuario nuevo o inicia sesion.
-6. Crea productos desde la seccion de productos.
-7. Crea subastas para tus productos.
-8. Participa en subastas y realiza pujas.
+1. Inicia MySQL.
+2. Crea la base de datos y tablas.
+3. Configura `backend/.env`.
+4. Ejecuta el backend.
+5. Ejecuta el frontend.
+6. Registra un usuario o inicia sesion.
+7. Entra a `Perfil` para revisar o recargar GanaCoins.
+8. Crea productos.
+9. Crea subastas con duracion en horas o minutos.
+10. Pujas desde el detalle de la subasta.
+
+## Seguridad y buenas practicas
+
+- No subas `backend/.env` ni `frontend/.env`.
+- No publiques claves JWT ni credenciales de MySQL.
+- Verifica que los archivos compilados del frontend no se modifiquen manualmente.
+- Mantén separados los datos de desarrollo y produccion.
 
 ## Solucion de problemas
 
 ### El backend no inicia
 
-- Verifica que el archivo `backend/.env` exista.
-- Verifica que MySQL este ejecutandose.
-- Verifica que `DB_NAME` exista en la base de datos.
-- Verifica que `JWT_SECRET` tenga un valor valido.
+- Verifica que MySQL este activo.
+- Verifica que `JWT_SECRET` exista.
+- Verifica que el puerto `5000` este libre.
+- Revisa que las credenciales de MySQL sean correctas.
 
-### El frontend muestra error de conexion
+### El frontend no conecta
 
-- Verifica que el backend este corriendo en `http://localhost:5000`.
-- Verifica que el proxy del frontend apunte al backend.
-- Abre la consola del navegador y revisa errores de red.
+- Verifica que el backend este corriendo.
+- Revisa el proxy en `frontend/package.json`.
+- Abre la consola del navegador para ver errores de red.
 
-### Error de autenticacion
+### No aparecen cambios en produccion
 
-- Borra el token y el usuario guardados en `localStorage`.
-- Vuelve a iniciar sesion.
-- Revisa que el token JWT no haya expirado.
+- Ejecuta `npm run build` en `frontend`.
+- Reinicia el backend.
+- Confirma que el backend sirva `frontend/build`.
 
-### Error de MySQL
+## Mantenimiento
 
-- Confirma que el usuario de MySQL tenga permisos sobre `proyectodb`.
-- Verifica que las tablas se hayan creado correctamente.
-- Revisa que el host, usuario y contrasena sean correctos.
-
-## Notas de desarrollo
-
-- El backend usa autenticacion basada en JWT.
-- El frontend protege rutas privadas con contexto de autenticacion.
-- La API se consume desde el frontend usando Axios.
-- El proyecto esta preparado para correr localmente en dos terminales separadas.
+Este proyecto ya no usa archivos de ejemplo de Create React App como tests base o Web Vitals, y se enfoca en la funcionalidad principal de subastas y billetera virtual.
 
 ## Autor
 
-Proyecto desarrollado por Papu.
-
-## Licencia
-
-Uso libre para fines educativos y de desarrollo local.
+Proyecto de Diseño Web II desarrollado por Josue Claros, Jose Manuel Callecusi, Fabricio Zeballos y Juan Pablo Medina.

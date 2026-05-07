@@ -7,7 +7,8 @@ const SubastaForm = ({ onGuardar, onCancelar }) => {
     producto_id: '',
     precio_inicial: '',
     precio_minimo: '',
-    duracion_horas: 24,
+    duracion_horas: 0,
+    duracion_minutos: 30,
     tiempo_extra_minutos: 5,
     fecha_inicio: ''
   });
@@ -41,7 +42,8 @@ const SubastaForm = ({ onGuardar, onCancelar }) => {
       ...formData,
       precio_inicial: parseFloat(formData.precio_inicial),
       precio_minimo: parseFloat(formData.precio_minimo),
-      duracion_horas: parseInt(formData.duracion_horas),
+      duracion_horas: parseInt(formData.duracion_horas, 10),
+      duracion_minutos: parseInt(formData.duracion_minutos),
       tiempo_extra_minutos: parseInt(formData.tiempo_extra_minutos)
     });
   };
@@ -72,11 +74,17 @@ const SubastaForm = ({ onGuardar, onCancelar }) => {
           </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Duracion (horas)</label>
-              <input type="number" name="duracion_horas" value={formData.duracion_horas} onChange={handleChange} min="1" max="168" required />
+              <label>Duración (horas)</label>
+              <input type="number" name="duracion_horas" value={formData.duracion_horas} onChange={handleChange} min="0" max="168" required />
             </div>
             <div className="form-group">
-              <label>Tiempo Extra (minutos)</label>
+              <label>Duración (minutos)</label>
+              <input type="number" name="duracion_minutos" value={formData.duracion_minutos} onChange={handleChange} min="0" max="59" required />
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Extensión automática al pujar (minutos)</label>
               <input type="number" name="tiempo_extra_minutos" value={formData.tiempo_extra_minutos} onChange={handleChange} min="1" max="30" required />
             </div>
           </div>
